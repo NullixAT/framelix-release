@@ -8796,11 +8796,14 @@ async function run (cmd, params) {
 
     const octokit = github.getOctokit(myToken)
 
+
+    const cwd = process.cwd()
+
+    console.log(await run('git', ['clone', 'https://github.com/NullixAT/framelix-docker', cwd+'/docker']))
+    console.log(await run('git', ['clone', 'https://github.com/' + process.env.GITHUB_REPOSITORY, cwd+'/docker/app']))
+    console.log(await run('ls', ['-al',  '.']))
     console.log(process.env)
 
-    console.log(await run('git', ['clone', 'https://github.com/NullixAT/framelix-docker', 'docker']))
-    console.log(await run('git', ['clone', 'https://github.com/' + process.env.GITHUB_REPOSITORY, 'docker/app']))
-    
   } catch (error) {
     core.setFailed(error.message)
   }
