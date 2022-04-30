@@ -1,8 +1,9 @@
 on:
   workflow_dispatch:
     inputs:
-      TAG:
+      RELEASE_TAG:
         required: true
+        type: string
 
 jobs:
   hello_world_job:
