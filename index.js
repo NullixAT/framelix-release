@@ -30,6 +30,8 @@ function removeNotNeededFiles (folder) {
     const path = folder + '/' + filename
     if (filename === '.git') {
       deleteRecursive(path)
+    }else if (fs.lstatSync(path).isDirectory()) {
+      removeNotNeededFiles(path)
     }
   }
 }
