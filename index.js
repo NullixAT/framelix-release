@@ -1,6 +1,9 @@
 const core = require('@actions/core')
 const github = require('@actions/github')
+const fs = require('fs')
 const { spawn } = require('child_process')
+const AdmZip = require('adm-zip')
+const path = require('path')
 
 async function run (cmd, params) {
   return new Promise(function (resolve) {
@@ -20,20 +23,53 @@ async function run (cmd, params) {
   })
 }
 
+function removeNotNeededFiles (folder) {
+  const files = fs.readdirSync(folder)
+  for (let i = 0; i < files.length; i++) {
+    const filename = files[i]
+    const path = folder + '/' + filename
+    if (filename === '.git') {
+      deleteRecursive(path)
+    }
+  }
+}
+
+function deleteRecursive (folder) {
+
+  const files = fs.readdirSync(folder)
+  for (let i = 0; i < files.length; i++) {
+    const path = folder + '/' + files[i]
+    if (fs.lstatSync(path).isDirectory()) {
+      deleteRecursive(path)
+    } else {
+      fs.unlinkSync(path)
+    }
+  }
+  fs.rmdirSync(folder)
+}
+
 (async function () {
   try {
 
-    const myToken = core.getInput('repo-token')
+    //const myToken = core.getInput('repo-token')
 
-    const octokit = github.getOctokit(myToken)
+    //const octokit = github.getOctokit(myToken)
 
+    if(process.env.GITHUB_REPOSITORY) {
+      const cwd = process.cwd()
 
-    const cwd = process.cwd()
+      console.log(await run('git', ['clone', '--depth=1', 'https://github.com/NullixAT/framelix-docker', cwd + '/export']))
+      console.log(await run('git', ['clone', '--recurse-submodules', '--depth=1', 'https://github.com/' + process.env.GITHUB_REPOSITORY, cwd + '/export/app']))
 
-    console.log(await run('git', ['clone', 'https://github.com/NullixAT/framelix-docker', cwd+'/docker']))
-    console.log(await run('git', ['clone', 'https://github.com/' + process.env.GITHUB_REPOSITORY, cwd+'/docker/app']))
-    console.log(await run('ls', ['-Ral',  '.']))
-    console.log(process.env)
+      removeNotNeededFiles(cwd + '/export')
+      console.log(await run('ls', ['-Ral', '.']))
+
+      const zip = new AdmZip()
+      zip.addLocalFolder(cwd + '/export')
+      zip.writeZip(cwd + '/export/release-docker.zip')
+
+      console.log(await run('ls', ['-Ral', '.']))
+    }
 
   } catch (error) {
     core.setFailed(error.message)
