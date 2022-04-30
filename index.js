@@ -1,28 +1,38 @@
-const core = require('@actions/core');
-const github = require('@actions/github');
-const { spawn } = require('child_process');
+const core = require('@actions/core')
+const github = require('@actions/github')
+const { spawn } = require('child_process')
 
-try {
+async function run (cmd, params) {
+  return new Promise(function (resolve) {
+    const proc = spawn(cmd, params)
+    let out = ''
+    proc.stdout.on('data', (data) => {
+      out += data
+    })
 
-  const myToken = core.getInput('repo-token');
+    proc.stderr.on('data', (data) => {
+      out += data
+    })
 
-  const octokit = github.getOctokit(myToken)
-
-  const ls = spawn('git', ['--version']);
-
-  ls.stdout.on('data', (data) => {
-    console.log(`stdout: ${data}`);
-  });
-
-  ls.stderr.on('data', (data) => {
-    console.error(`stderr: ${data}`);
-  });
-
-  ls.on('close', (code) => {
-    core.setOutput('time', code);
-    console.log(`child process exited with code ${code}`);
-  });
-
-} catch (error) {
-  core.setFailed(error.message);
+    proc.on('close', (code) => {
+      resolve(out)
+    })
+  })
 }
+
+(async function () {
+  try {
+
+    const myToken = core.getInput('repo-token')
+
+    const octokit = github.getOctokit(myToken)
+
+    console.log(process.env)
+
+    console.log(await run('git', ['clone', 'https://github.com/NullixAT/framelix-docker', 'docker']))
+    console.log(await run('git', ['clone', 'https://github.com/' + process.env.GITHUB_REPOSITORY, 'docker/app']))
+
+  } catch (error) {
+    core.setFailed(error.message)
+  }
+})()

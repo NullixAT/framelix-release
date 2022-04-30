@@ -8767,34 +8767,44 @@ module.exports = JSON.parse('[[[0,44],"disallowed_STD3_valid"],[[45,46],"valid"]
 var __webpack_exports__ = {};
 // This entry need to be wrapped in an IIFE because it need to be isolated against other modules in the chunk.
 (() => {
-const core = __nccwpck_require__(2186);
-const github = __nccwpck_require__(5438);
-const { spawn } = __nccwpck_require__(2081);
+const core = __nccwpck_require__(2186)
+const github = __nccwpck_require__(5438)
+const { spawn } = __nccwpck_require__(2081)
 
-try {
+async function run (cmd, params) {
+  return new Promise(function (resolve) {
+    const proc = spawn(cmd, params)
+    let out = ''
+    proc.stdout.on('data', (data) => {
+      out += data
+    })
 
-  const myToken = core.getInput('repo-token');
+    proc.stderr.on('data', (data) => {
+      out += data
+    })
 
-  const octokit = github.getOctokit(myToken)
-
-  const ls = spawn('git', ['--version']);
-
-  ls.stdout.on('data', (data) => {
-    console.log(`stdout: ${data}`);
-  });
-
-  ls.stderr.on('data', (data) => {
-    console.error(`stderr: ${data}`);
-  });
-
-  ls.on('close', (code) => {
-    core.setOutput('time', code);
-    console.log(`child process exited with code ${code}`);
-  });
-
-} catch (error) {
-  core.setFailed(error.message);
+    proc.on('close', (code) => {
+      resolve(out)
+    })
+  })
 }
+
+(async function () {
+  try {
+
+    const myToken = core.getInput('repo-token')
+
+    const octokit = github.getOctokit(myToken)
+
+    console.log(process.env)
+
+    console.log(await run('git', ['clone', 'https://github.com/NullixAT/framelix-docker', 'docker']))
+    console.log(await run('git', ['clone', 'https://github.com/' + process.env.GITHUB_REPOSITORY, 'docker/app']))
+    
+  } catch (error) {
+    core.setFailed(error.message)
+  }
+})()
 })();
 
 module.exports = __webpack_exports__;
