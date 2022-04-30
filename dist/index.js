@@ -11690,13 +11690,24 @@ function deleteRecursive (folder) {
       zip.writeZip(cwd + '/export/release-docker.zip')
 
       const repoSplit = process.env.GITHUB_REPOSITORY.split("/", 2)
-      octokit.rest.repos.createRelease({
+      const release = await octokit.rest.repos.createRelease({
         owner: repoSplit[0],
         repo : repoSplit[1],
-        tag_name : core.getInput('VERSION'),
-        prerelease : true
+        tag_name : core.getInput('TAG'),
+        draft:true
       });
 
+      console.log(release)
+
+      /*
+      const asset = await octokit.rest.repos.uploadReleaseAsset({
+        owner: repoSplit[0],
+        repo : repoSplit[1],
+        release_id : release.
+        tag_name : core.getInput('TAG'),
+        draft:true
+      });
+*/
     }
 
   } catch (error) {
