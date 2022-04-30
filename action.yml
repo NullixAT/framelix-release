@@ -1,10 +1,9 @@
 name: 'Framelix Release Creator'
 description: 'Create a release for a Framelix based project'
 inputs:
-  who-to-greet:  # id of input
-    description: 'Who to greet'
+  repo-token:
+    description: 'Access token'
     required: true
-    default: 'World'
 outputs:
   time: # id of output
     description: 'The time we greeted you'
