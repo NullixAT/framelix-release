@@ -8801,7 +8801,7 @@ async function run (cmd, params) {
 
     console.log(await run('git', ['clone', 'https://github.com/NullixAT/framelix-docker', cwd+'/docker']))
     console.log(await run('git', ['clone', 'https://github.com/' + process.env.GITHUB_REPOSITORY, cwd+'/docker/app']))
-    console.log(await run('ls', ['-al',  '.']))
+    console.log(await run('ls', ['-Ral',  '.']))
     console.log(process.env)
 
   } catch (error) {
