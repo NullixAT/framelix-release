@@ -3,7 +3,6 @@ const github = require('@actions/github')
 const fs = require('fs')
 const { spawn } = require('child_process')
 const AdmZip = require('adm-zip')
-const path = require('path')
 
 async function run (cmd, params) {
   return new Promise(function (resolve) {
@@ -17,7 +16,7 @@ async function run (cmd, params) {
       out += data
     })
 
-    proc.on('close', (code) => {
+    proc.on('close', () => {
       resolve(out)
     })
   })
@@ -30,6 +29,7 @@ function removeNotNeededFiles (folder) {
     const path = folder + '/' + filename
     const isDir = fs.lstatSync(path).isDirectory()
     if (isDir && (filename === '.git' || filename === '.github')) {
+      core.info(path)
       deleteRecursive(path)
     } else if (isDir) {
       removeNotNeededFiles(path)
@@ -38,7 +38,6 @@ function removeNotNeededFiles (folder) {
 }
 
 function deleteRecursive (folder) {
-
   const files = fs.readdirSync(folder)
   for (let i = 0; i < files.length; i++) {
     const path = folder + '/' + files[i]
@@ -59,35 +58,54 @@ function deleteRecursive (folder) {
     if (process.env.GITHUB_REPOSITORY) {
       const cwd = process.cwd()
 
-      console.log(await run('git', ['clone', '--depth=1', 'https://github.com/NullixAT/framelix-docker', cwd + '/export']))
-      console.log(await run('git', ['clone', '--recurse-submodules', '--depth=1', 'https://github.com/' + process.env.GITHUB_REPOSITORY, cwd + '/export/app']))
+      core.info('===Cloning repositories===')
+      core.info(await run('git', ['clone', '--depth=1', 'https://github.com/NullixAT/framelix-docker', cwd + '/export']))
+      core.info(await run('git', ['clone', '--recurse-submodules', '--depth=1', 'https://github.com/' + process.env.GITHUB_REPOSITORY, cwd + '/export/app']))
 
+      core.info('===Removing not needed files===')
       removeNotNeededFiles(cwd + '/export')
+      core.info('✓ Done')
 
-      const zip = new AdmZip()
-      zip.addLocalFolder(cwd + '/export')
-      zip.writeZip(cwd + '/export/release-docker.zip')
-
+      core.info('===Creating release===')
+      const tag = core.getInput('TAG')
+      let body = ''
       const repoSplit = process.env.GITHUB_REPOSITORY.split('/', 2)
       const release = await octokit.rest.repos.createRelease({
         owner: repoSplit[0],
         repo: repoSplit[1],
-        tag_name: core.getInput('TAG'),
-        draft: true
+        tag_name: tag,
+        draft: true,
+        name:tag,
+        body : body
       })
+      core.info('✓ Done')
 
-
-      const asset = await octokit.rest.repos.uploadReleaseAsset({
+      core.info('===Uploading docker-package.zip===')
+      let zip = new AdmZip()
+      zip.addLocalFolder(cwd + '/export')
+      await octokit.rest.repos.uploadReleaseAsset({
         owner: repoSplit[0],
         repo: repoSplit[1],
         release_id: release.data.id,
-        name: 'release-docker.zip',
+        name: 'docker-package.zip',
         data: zip.toBuffer()
       })
+      core.info('✓ Done')
 
-      console.log(asset)
+      core.info('===app-package.zip===')
+      zip = new AdmZip()
+      zip.addLocalFolder(cwd + '/export/app')
+      await octokit.rest.repos.uploadReleaseAsset({
+        owner: repoSplit[0],
+        repo: repoSplit[1],
+        release_id: release.data.id,
+        name: 'app-package.zip',
+        data: zip.toBuffer()
+      })
+      core.info('✓ Done')
+
+      core.info('✓✓✓ All done')
     }
-
   } catch (error) {
     core.setFailed(error.message)
   }
