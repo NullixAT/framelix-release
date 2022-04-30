@@ -15,3 +15,4 @@ jobs:
         uses: NullixAT/framelix-release@main
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: ${{ github.event.inputs.RELEASE_TAG }}
