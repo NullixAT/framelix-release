@@ -11652,7 +11652,7 @@ function removeNotNeededFiles (folder) {
     const isDir = fs.lstatSync(path).isDirectory()
     if (isDir && (filename === '.git' || filename === '.github')) {
       deleteRecursive(path)
-    }else if (isDir) {
+    } else if (isDir) {
       removeNotNeededFiles(path)
     }
   }
@@ -11677,7 +11677,7 @@ function deleteRecursive (folder) {
     const myToken = core.getInput('GITHUB_TOKEN')
     const octokit = github.getOctokit(myToken)
 
-    if(process.env.GITHUB_REPOSITORY) {
+    if (process.env.GITHUB_REPOSITORY) {
       const cwd = process.cwd()
 
       console.log(await run('git', ['clone', '--depth=1', 'https://github.com/NullixAT/framelix-docker', cwd + '/export']))
@@ -11689,25 +11689,24 @@ function deleteRecursive (folder) {
       zip.addLocalFolder(cwd + '/export')
       zip.writeZip(cwd + '/export/release-docker.zip')
 
-      const repoSplit = process.env.GITHUB_REPOSITORY.split("/", 2)
+      const repoSplit = process.env.GITHUB_REPOSITORY.split('/', 2)
       const release = await octokit.rest.repos.createRelease({
         owner: repoSplit[0],
-        repo : repoSplit[1],
-        tag_name : core.getInput('TAG'),
-        draft:true
-      });
+        repo: repoSplit[1],
+        tag_name: core.getInput('TAG'),
+        draft: true
+      })
 
-      console.log(release)
 
-      /*
       const asset = await octokit.rest.repos.uploadReleaseAsset({
         owner: repoSplit[0],
-        repo : repoSplit[1],
-        release_id : release.
-        tag_name : core.getInput('TAG'),
-        draft:true
-      });
-*/
+        repo: repoSplit[1],
+        release_id: release.data.id,
+        name: 'release-docker.zip',
+        data: zip.toBuffer()
+      })
+
+      console.log(asset)
     }
 
   } catch (error) {
