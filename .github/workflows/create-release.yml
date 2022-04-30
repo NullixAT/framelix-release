@@ -3,14 +3,15 @@ on:
     inputs:
       RELEASE_TAG:
         required: true
+        description: 'Choose a tag to create the release from'
         type: string
 
 jobs:
-  hello_world_job:
+  create_release:
     runs-on: ubuntu-latest
-    name: A job to say hello
+    name: Creating release
     steps:
-      - name: Hello world action step
+      - name: Creating release
         id: hello
         uses: NullixAT/framelix-release@main
         with:
