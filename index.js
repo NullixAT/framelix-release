@@ -68,10 +68,12 @@ function deleteRecursive (folder) {
       zip.addLocalFolder(cwd + '/export')
       zip.writeZip(cwd + '/export/release-docker.zip')
 
+      const repoSplit = process.env.GITHUB_REPOSITORY.split("/", 2)
       octokit.rest.repos.createRelease({
-        owner: process.env.GITHUB_REPOSITORY_OWNER,
-        repo : process.env.GITHUB_REPOSITORY,
+        owner: repoSplit[0],
+        repo : repoSplit[1],
         tag_name : core.getInput('VERSION'),
+        prerelease : true
       });
 
     }
