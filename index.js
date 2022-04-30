@@ -28,9 +28,10 @@ function removeNotNeededFiles (folder) {
   for (let i = 0; i < files.length; i++) {
     const filename = files[i]
     const path = folder + '/' + filename
-    if (filename === '.git') {
+    const isDir = fs.lstatSync(path).isDirectory()
+    if (isDir && (filename === '.git' || filename === '.github')) {
       deleteRecursive(path)
-    }else if (fs.lstatSync(path).isDirectory()) {
+    }else if (isDir) {
       removeNotNeededFiles(path)
     }
   }
