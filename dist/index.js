@@ -11649,9 +11649,13 @@ function removeNotNeededFiles (folder) {
     const filename = files[i]
     const path = folder + '/' + filename
     const isDir = fs.lstatSync(path).isDirectory()
-    if (isDir && (filename === '.git' || filename === '.github')) {
+    if (filename.startsWith('.git')) {
       core.info(path)
-      deleteRecursive(path)
+      if (isDir) {
+        deleteRecursive(path)
+      } else {
+        fs.unlinkSync(path)
+      }
     } else if (isDir) {
       removeNotNeededFiles(path)
     }
@@ -11686,9 +11690,13 @@ function deleteRecursive (folder) {
       core.info('===Removing not needed files===')
       removeNotNeededFiles(cwd + '/export')
       core.info('✓ Done')
+      core.info('')
 
       core.info('===Creating release===')
       const tag = core.getInput('TAG')
+
+      console.log('TAG: ' + tag)
+
       let body = ''
       const repoSplit = process.env.GITHUB_REPOSITORY.split('/', 2)
       const release = await octokit.rest.repos.createRelease({
@@ -11696,10 +11704,11 @@ function deleteRecursive (folder) {
         repo: repoSplit[1],
         tag_name: tag,
         draft: true,
-        name:tag,
-        body : body
+        name: tag,
+        body: body
       })
       core.info('✓ Done')
+      core.info('')
 
       core.info('===Uploading docker-package.zip===')
       let zip = new AdmZip()
@@ -11712,6 +11721,7 @@ function deleteRecursive (folder) {
         data: zip.toBuffer()
       })
       core.info('✓ Done')
+      core.info('')
 
       core.info('===Uploading app-package.zip===')
       zip = new AdmZip()
@@ -11724,7 +11734,10 @@ function deleteRecursive (folder) {
         data: zip.toBuffer()
       })
       core.info('✓ Done')
+      core.info('')
 
+      core.info('')
+      core.info('')
       core.info('✓✓✓ All done')
     }
   } catch (error) {
