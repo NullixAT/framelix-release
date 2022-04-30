@@ -11681,7 +11681,14 @@ function deleteRecursive (folder) {
     const octokit = github.getOctokit(myToken)
 
     if (process.env.GITHUB_REPOSITORY) {
+
+      const repoSplit = process.env.GITHUB_REPOSITORY.split('/', 2)
+      const tag = core.getInput('RELEASE_TAG', { required: true })
       const cwd = process.cwd()
+
+
+      core.info('===RELEASE TAG: ' + tag + '===')
+      core.info('')
 
       core.info('===Cloning repositories===')
       core.info(await run('git', ['clone', '--depth=1', 'https://github.com/NullixAT/framelix-docker', cwd + '/export']))
@@ -11693,12 +11700,8 @@ function deleteRecursive (folder) {
       core.info('')
 
       core.info('===Creating release===')
-      const tag = core.getInput('RELEASE_TAG', {required : true})
-
-      console.log('TAG: ' + tag)
 
       let body = ''
-      const repoSplit = process.env.GITHUB_REPOSITORY.split('/', 2)
       const release = await octokit.rest.repos.createRelease({
         owner: repoSplit[0],
         repo: repoSplit[1],
