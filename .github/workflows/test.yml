@@ -1,12 +1,13 @@
-on: [workflow_dispatch]
+on:
+  workflow_dispatch:
+    inputs:
+      VERSION:
+        required: true
 
 jobs:
   hello_world_job:
     runs-on: ubuntu-latest
     name: A job to say hello
-    inputs:
-      VERSION:
-        required: true
     steps:
       - name: Hello world action step
         id: hello
