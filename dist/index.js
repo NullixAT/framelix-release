@@ -11693,7 +11693,7 @@ function deleteRecursive (folder) {
       core.info('')
 
       core.info('===Creating release===')
-      const tag = core.getInput('TAG')
+      const tag = core.getInput('RELEASE_TAG', {required : true})
 
       console.log('TAG: ' + tag)
 
