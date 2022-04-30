@@ -19,24 +19,9 @@ try {
   });
 
   ls.on('close', (code) => {
+    core.setOutput('time', code);
     console.log(`child process exited with code ${code}`);
   });
-
-  return
-
-  // You can also pass in additional options as a second parameter to getOctokit
-  // const octokit = github.getOctokit(myToken, {userAgent: "MyActionVersion1"});
-
-  const { data: pullRequest } = await octokit.rest.pulls.get({
-    owner: 'octokit',
-    repo: 'rest.js',
-    pull_number: 123,
-    mediaType: {
-      format: 'diff'
-    }
-  });
-
-  console.log(pullRequest);
 
 } catch (error) {
   core.setFailed(error.message);
