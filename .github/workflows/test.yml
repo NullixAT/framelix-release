@@ -4,11 +4,12 @@ jobs:
   hello_world_job:
     runs-on: ubuntu-latest
     name: A job to say hello
+    inputs:
+      VERSION:
+        required: true
     steps:
       - name: Hello world action step
         id: hello
         uses: NullixAT/framelix-release@main
         with:
-          VERSION:
-            required: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
