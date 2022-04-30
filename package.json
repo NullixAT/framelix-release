@@ -4,7 +4,7 @@
   "description": "Action to create releases for Framelix based projects.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "node_modules/@vercel/ncc/dist/ncc/cli.js build index.js --license licenses.txt"
   },
   "repository": {
     "type": "git",
@@ -19,6 +19,7 @@
   "homepage": "https://github.com/NullixAT/framelix-release#readme",
   "dependencies": {
     "@actions/core": "^1.7.0",
-    "@actions/github": "^5.0.1"
+    "@actions/github": "^5.0.1",
+    "@vercel/ncc": "^0.33.4"
   }
 }
