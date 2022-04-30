@@ -92,7 +92,7 @@ function deleteRecursive (folder) {
       })
       core.info('✓ Done')
 
-      core.info('===app-package.zip===')
+      core.info('===Uploading app-package.zip===')
       zip = new AdmZip()
       zip.addLocalFolder(cwd + '/export/app')
       await octokit.rest.repos.uploadReleaseAsset({
