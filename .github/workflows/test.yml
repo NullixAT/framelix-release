@@ -9,4 +9,6 @@ jobs:
         id: hello
         uses: NullixAT/framelix-release@main
         with:
+          VERSION:
+            required: true
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
