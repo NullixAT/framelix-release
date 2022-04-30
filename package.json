@@ -1,0 +1,24 @@
+{
+  "name": "framelix-release",
+  "version": "1.0.0",
+  "description": "Action to create releases for Framelix based projects.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NullixAT/framelix-release.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NullixAT/framelix-release/issues"
+  },
+  "homepage": "https://github.com/NullixAT/framelix-release#readme",
+  "dependencies": {
+    "@actions/core": "^1.7.0",
+    "@actions/github": "^5.0.1"
+  }
+}
