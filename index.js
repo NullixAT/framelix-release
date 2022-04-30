@@ -53,10 +53,8 @@ function deleteRecursive (folder) {
 
 (async function () {
   try {
-
-    //const myToken = core.getInput('repo-token')
-
-    //const octokit = github.getOctokit(myToken)
+    const myToken = core.getInput('GITHUB_TOKEN')
+    const octokit = github.getOctokit(myToken)
 
     if(process.env.GITHUB_REPOSITORY) {
       const cwd = process.cwd()
@@ -65,13 +63,17 @@ function deleteRecursive (folder) {
       console.log(await run('git', ['clone', '--recurse-submodules', '--depth=1', 'https://github.com/' + process.env.GITHUB_REPOSITORY, cwd + '/export/app']))
 
       removeNotNeededFiles(cwd + '/export')
-      console.log(await run('ls', ['-Ral', '.']))
 
       const zip = new AdmZip()
       zip.addLocalFolder(cwd + '/export')
       zip.writeZip(cwd + '/export/release-docker.zip')
 
-      console.log(await run('ls', ['-Ral', '.']))
+      octokit.rest.repos.createRelease({
+        owner: process.env.GITHUB_REPOSITORY_OWNER,
+        repo : process.env.GITHUB_REPOSITORY,
+        tag_name : core.getInput('VERSION'),
+      });
+
     }
 
   } catch (error) {

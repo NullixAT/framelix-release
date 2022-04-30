@@ -1,7 +1,10 @@
 name: 'Framelix Release Creator'
 description: 'Create a release for a Framelix based project'
 inputs:
-  repo-token:
+  VERSION:
+    description: 'Release Version'
+    required: true
+  GITHUB_TOKEN:
     description: 'Access token'
     required: true
 outputs:
