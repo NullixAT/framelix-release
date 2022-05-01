@@ -116,6 +116,8 @@ function deleteRecursive (folder) {
       core.info('===Uploading docker-release.zip asset===')
       zip = new AdmZip()
       zip.addLocalFolder(cwd + '/export')
+      zip.addLocalFile(__dirname + '/src/install.php', 'install.php')
+      zip.addLocalFile(__dirname + '/src/check-requirements.php', 'check-requirements.php')
       await octokit.rest.repos.uploadReleaseAsset({
         owner: repoSplit[0],
         repo: repoSplit[1],
@@ -126,9 +128,9 @@ function deleteRecursive (folder) {
       core.info('✓ Done')
       core.info('')
 
-      core.info('')
-      core.info('')
-      core.info('✓✓✓ All done')
+      core.info('✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓')
+      core.info('✓✓✓ All done ✓✓✓')
+      core.info('✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓')
     }
   } catch (error) {
     core.setFailed(error.message)
