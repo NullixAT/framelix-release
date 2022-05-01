@@ -11686,6 +11686,8 @@ function deleteRecursive (folder) {
       const tag = core.getInput('RELEASE_TAG', { required: true })
       const cwd = process.cwd()
 
+      let zip
+      let body = ''
 
       core.info('===RELEASE TAG: ' + tag + '===')
       core.info('')
@@ -11699,9 +11701,8 @@ function deleteRecursive (folder) {
       core.info('✓ Done')
       core.info('')
 
-      core.info('===Creating release===')
+      core.info('===Creating draft release ' + tag + '===')
 
-      let body = ''
       const release = await octokit.rest.repos.createRelease({
         owner: repoSplit[0],
         repo: repoSplit[1],
@@ -11713,27 +11714,34 @@ function deleteRecursive (folder) {
       core.info('✓ Done')
       core.info('')
 
-      core.info('===Uploading docker-package.zip===')
-      let zip = new AdmZip()
-      zip.addLocalFolder(cwd + '/export')
-      await octokit.rest.repos.uploadReleaseAsset({
-        owner: repoSplit[0],
-        repo: repoSplit[1],
-        release_id: release.data.id,
-        name: 'docker-package.zip',
-        data: zip.toBuffer()
-      })
-      core.info('✓ Done')
-      core.info('')
-
-      core.info('===Uploading app-package.zip===')
+      core.info('===Uploading app-release.zip asset===')
       zip = new AdmZip()
       zip.addLocalFolder(cwd + '/export/app')
       await octokit.rest.repos.uploadReleaseAsset({
         owner: repoSplit[0],
         repo: repoSplit[1],
         release_id: release.data.id,
-        name: 'app-package.zip',
+        name: 'app-release.zip',
+        data: zip.toBuffer()
+      })
+      core.info('✓ Done')
+      core.info('')
+
+      core.info('===Preparing /app folder for docker release===')
+      deleteRecursive(cwd + '/export/app')
+      fs.mkdirSync(cwd + '/export/app')
+      zip.writeZip(cwd + '/export/app/app-release.zip')
+      core.info('✓ Done')
+      core.info('')
+
+      core.info('===Uploading docker-release.zip asset===')
+      zip = new AdmZip()
+      zip.addLocalFolder(cwd + '/export')
+      await octokit.rest.repos.uploadReleaseAsset({
+        owner: repoSplit[0],
+        repo: repoSplit[1],
+        release_id: release.data.id,
+        name: 'docker-release.zip',
         data: zip.toBuffer()
       })
       core.info('✓ Done')

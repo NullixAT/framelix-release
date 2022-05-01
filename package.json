@@ -4,7 +4,7 @@
   "description": "Action to create releases for Framelix based projects.",
   "main": "index.js",
   "scripts": {
-    "build": "node node_modules/@vercel/ncc/dist/ncc/cli.js build index.js --license licenses.txt"
+    "build-dist": "node node_modules/@vercel/ncc/dist/ncc/cli.js build index.js --license licenses.txt"
   },
   "repository": {
     "type": "git",

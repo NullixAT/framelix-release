@@ -3,7 +3,7 @@ on:
     inputs:
       RELEASE_TAG:
         required: true
-        description: 'Choose a tag to create the release from'
+        description: 'Choose an existing TAG'
         type: string
 
 jobs:
@@ -12,7 +12,7 @@ jobs:
     name: Creating release
     steps:
       - name: Creating release
-        id: hello
+        id: release
         uses: NullixAT/framelix-release@main
         with:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
