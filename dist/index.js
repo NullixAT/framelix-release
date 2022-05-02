@@ -11719,8 +11719,8 @@ function deleteRecursive (folder) {
       core.info('✓ Done')
       core.info('')
 
-      if (fs.existsSync(cwd + '/export/CHANGELOG.md')) {
-        let changelogLines = fs.readFileSync(cwd + '/export/CHANGELOG.md').toString().split('\n')
+      if (fs.existsSync(cwd + '/export/app/CHANGELOG.md')) {
+        let changelogLines = fs.readFileSync(cwd + '/export/app/CHANGELOG.md').toString().split('\n')
         let bodyLines = []
         let valid = false
         for (let i = 0; i < changelogLines.length; i++) {
