@@ -126,6 +126,20 @@ function deleteRecursive (folder) {
       core.info('✓ Done')
       core.info('')
 
+      let dockerVersion
+      let dockerComposeData = fs.readFileSync(cwd + '/export/docker-compose.yml').toString()
+      dockerVersion = dockerComposeData.match(/- FRAMELIX_DOCKER_VERSION=(.*)/i)[1].trim()
+      core.info('===Uploading docker-version.txt asset===')
+      await octokit.rest.repos.uploadReleaseAsset({
+        owner: repoSplit[0],
+        repo: repoSplit[1],
+        release_id: release.data.id,
+        name: 'docker-version.txt',
+        data: dockerVersion
+      })
+      core.info('✓ Done')
+      core.info('')
+
       core.info('✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓')
       core.info('✓✓✓ All done ✓✓✓')
       core.info('✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓✓')
