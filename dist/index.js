@@ -11704,7 +11704,7 @@ function deleteRecursive (folder) {
 
       core.info('===Prepare docker-update.zip===')
       const dockerUpdateZip = new AdmZip()
-      dockerUpdateZip.addLocalFolder(cwd + '/export/app')
+      dockerUpdateZip.addLocalFolder(cwd + '/export')
       const dockerUpdateZipBuffer = dockerUpdateZip.toBuffer()
       core.info('✓ Done')
       core.info('')
