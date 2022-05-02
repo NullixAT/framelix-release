@@ -67,6 +67,23 @@ function deleteRecursive (folder) {
 
       let zip
       let body = ''
+      if (fs.existsSync(cwd + '/export/CHANGELOG.md')) {
+        let changelogLines = fs.readFileSync(cwd + '/export/CHANGELOG.md').toString().split('\n')
+        let bodyLines = []
+        let valid = false
+        for (let i = 0; i < changelogLines.length; i++) {
+          const line = changelogLines[i]
+          if (line.startsWith('##') && line.match(new RegExp(tag, i))) {
+            valid = true
+            continue
+          }
+          if (line.startsWith('##') && valid) break
+          if (valid) {
+            bodyLines.push(line)
+          }
+        }
+        body = bodyLines.join('\n').trim()
+      }
 
       core.info('===RELEASE TAG: ' + tag + '===')
       core.info('')
@@ -88,7 +105,7 @@ function deleteRecursive (folder) {
         tag_name: tag,
         draft: true,
         name: tag,
-        body: body
+        body: '# CHANGELOG\n\n' + body
       })
       core.info('✓ Done')
       core.info('')
