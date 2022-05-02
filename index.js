@@ -73,7 +73,7 @@ function deleteRecursive (folder) {
 
       core.info('===Cloning repositories===')
       core.info(await run('git', ['clone', '--depth=1', 'https://github.com/NullixAT/framelix-docker', cwd + '/export']))
-      core.info(await run('git', ['clone', '--recurse-submodules', '--depth=1', 'https://github.com/' + process.env.GITHUB_REPOSITORY, cwd + '/export/app']))
+      core.info(await run('git', ['clone', '--recurse-submodules', '--depth=1', '-b', tag, 'https://github.com/' + process.env.GITHUB_REPOSITORY, cwd + '/export/app']))
 
       core.info('===Removing not needed files===')
       removeNotNeededFiles(cwd + '/export')
