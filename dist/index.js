@@ -11688,6 +11688,19 @@ function deleteRecursive (folder) {
 
       let zip
       let body = ''
+
+      core.info('===RELEASE TAG: ' + tag + '===')
+      core.info('')
+
+      core.info('===Cloning repositories===')
+      core.info(await run('git', ['clone', '--depth=1', 'https://github.com/NullixAT/framelix-docker', cwd + '/export']))
+      core.info(await run('git', ['clone', '--recurse-submodules', '--depth=1', 'https://github.com/' + process.env.GITHUB_REPOSITORY, cwd + '/export/app']))
+
+      core.info('===Removing not needed files===')
+      removeNotNeededFiles(cwd + '/export')
+      core.info('✓ Done')
+      core.info('')
+
       if (fs.existsSync(cwd + '/export/CHANGELOG.md')) {
         let changelogLines = fs.readFileSync(cwd + '/export/CHANGELOG.md').toString().split('\n')
         let bodyLines = []
@@ -11705,18 +11718,6 @@ function deleteRecursive (folder) {
         }
         body = bodyLines.join('\n').trim()
       }
-
-      core.info('===RELEASE TAG: ' + tag + '===')
-      core.info('')
-
-      core.info('===Cloning repositories===')
-      core.info(await run('git', ['clone', '--depth=1', 'https://github.com/NullixAT/framelix-docker', cwd + '/export']))
-      core.info(await run('git', ['clone', '--recurse-submodules', '--depth=1', 'https://github.com/' + process.env.GITHUB_REPOSITORY, cwd + '/export/app']))
-
-      core.info('===Removing not needed files===')
-      removeNotNeededFiles(cwd + '/export')
-      core.info('✓ Done')
-      core.info('')
 
       core.info('===Creating draft release ' + tag + '===')
 
