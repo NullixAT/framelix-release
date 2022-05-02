@@ -61,11 +61,8 @@ function deleteRecursive (folder) {
 
     if (process.env.GITHUB_REPOSITORY) {
 
-      console.log(process.env)
-
-      return
       const repoSplit = process.env.GITHUB_REPOSITORY.split('/', 2)
-      const tag = core.getInput('RELEASE_TAG', { required: true })
+      const tag = process.env.GITHUB_REF_NAME
       const cwd = process.cwd()
 
       let zip
