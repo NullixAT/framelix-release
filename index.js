@@ -86,7 +86,7 @@ function deleteRecursive (folder) {
         let valid = false
         for (let i = 0; i < changelogLines.length; i++) {
           const line = changelogLines[i]
-          if (line.startsWith('##') && line.match(new RegExp(tag, i))) {
+          if (line.startsWith('##') && line.includes(tag)) {
             valid = true
             continue
           }
