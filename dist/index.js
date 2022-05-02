@@ -11692,9 +11692,27 @@ function deleteRecursive (folder) {
       core.info('===RELEASE TAG: ' + tag + '===')
       core.info('')
 
-      core.info('===Cloning repositories===')
+      core.info('===Cloning framelix-docker repository===')
       core.info(await run('git', ['clone', '--depth=1', 'https://github.com/NullixAT/framelix-docker', cwd + '/export']))
+      core.info('✓ Done')
+      core.info('')
+
+      core.info('===Removing not needed files===')
+      removeNotNeededFiles(cwd + '/export')
+      core.info('✓ Done')
+      core.info('')
+
+      core.info('===Prepare docker-update.zip===')
+      const dockerUpdateZip = new AdmZip()
+      dockerUpdateZip.addLocalFolder(cwd + '/export/app')
+      const dockerUpdateZipBuffer = dockerUpdateZip.toBuffer()
+      core.info('✓ Done')
+      core.info('')
+
+      core.info('===Cloning app repository===')
       core.info(await run('git', ['clone', '--recurse-submodules', '--depth=1', '-b', tag, 'https://github.com/' + process.env.GITHUB_REPOSITORY, cwd + '/export/app']))
+      core.info('✓ Done')
+      core.info('')
 
       core.info('===Removing not needed files===')
       removeNotNeededFiles(cwd + '/export')
@@ -11761,6 +11779,17 @@ function deleteRecursive (folder) {
         release_id: release.data.id,
         name: 'docker-release.zip',
         data: zip.toBuffer()
+      })
+      core.info('✓ Done')
+      core.info('')
+
+      core.info('===Uploading docker-update.zip asset===')
+      await octokit.rest.repos.uploadReleaseAsset({
+        owner: repoSplit[0],
+        repo: repoSplit[1],
+        release_id: release.data.id,
+        name: 'docker-update.zip',
+        data: dockerUpdateZipBuffer
       })
       core.info('✓ Done')
       core.info('')
