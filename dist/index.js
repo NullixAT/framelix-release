@@ -15703,7 +15703,7 @@ function createTarPack (folder, filename) {
         repo: repoSplit[1],
         release_id: release.data.id,
         name: filename,
-        data: ''
+        data: dockerVersion
       })
     }
     core.info('✓ Done')
