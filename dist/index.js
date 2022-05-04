@@ -15619,10 +15619,11 @@ function createTarPack (folder, filename) {
     }
 
     core.info('===Creating draft release ' + tag + '===')
+    let release
     if (isTest) {
 
     } else {
-      const release = await octokit.rest.repos.createRelease({
+      release = await octokit.rest.repos.createRelease({
         owner: repoSplit[0],
         repo: repoSplit[1],
         tag_name: tag,
