@@ -4,7 +4,9 @@
   "description": "Action to create releases for Framelix based projects.",
   "main": "index.js",
   "scripts": {
-    "build-dist": "node node_modules/@vercel/ncc/dist/ncc/cli.js build index.js --license licenses.txt"
+    "build-dist": "node node_modules/@vercel/ncc/dist/ncc/cli.js build index.js --license licenses.txt",
+    "test-export-src": "node index.js test NullixAT/framelix-release main",
+    "test-export-dist": "node dist/index.js test NullixAT/framelix-release main"
   },
   "repository": {
     "type": "git",
@@ -21,6 +23,6 @@
     "@actions/core": "^1.7.0",
     "@actions/github": "^5.0.1",
     "@vercel/ncc": "^0.33.4",
-    "adm-zip": "^0.5.9"
+    "tar": "^6.1.11"
   }
 }
