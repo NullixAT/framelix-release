@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build-dist": "node node_modules/@vercel/ncc/dist/ncc/cli.js build index.js --license licenses.txt",
-    "test-export-src": "node index.js test NullixAT/framelix-release main",
-    "test-export-dist": "node dist/index.js test NullixAT/framelix-release main"
+    "test-export-src": "node index.js test NullixAT/pagemyself 1.0.0-alpha.4",
+    "test-export-dist": "node dist/index.js test NullixAT/pagemyself main"
   },
   "repository": {
     "type": "git",

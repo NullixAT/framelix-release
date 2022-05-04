@@ -104,6 +104,7 @@ function createTarPack (folder, filename) {
     core.info('')
 
     core.info('===Removing not needed files===')
+    deleteRecursive(cwd + '/export/docs')
     removeNotNeededFiles(cwd + '/export')
     core.info('✓ Done')
     core.info('')
@@ -119,6 +120,7 @@ function createTarPack (folder, filename) {
     core.info('')
 
     core.info('===Removing not needed files===')
+    deleteRecursive(cwd + '/export/app/docs')
     removeNotNeededFiles(cwd + '/export')
     core.info('✓ Done')
     core.info('')
