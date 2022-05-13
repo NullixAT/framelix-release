@@ -26,7 +26,7 @@ function removeNotNeededFiles (folder) {
     const filename = files[i]
     const path = folder + '/' + filename
     const isDir = fs.lstatSync(path).isDirectory()
-    if (filename.startsWith('.git')) {
+    if (filename.startsWith('.git') && filename !== '.gitignore') {
       core.info(path)
       if (isDir) {
         deleteRecursive(path)
